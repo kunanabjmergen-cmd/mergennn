@@ -1,0 +1,1669 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Mentor AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #090b10;
+    --panel: #10141c;
+    --panel2: #151a24;
+    --border: #252c38;
+    --text: #f4f7fb;
+    --muted: #8d98aa;
+    --accent: #7c5cff;
+    --accent2: #5eead4;
+    --danger: #ff5c75;
+    --user: #253052;
+    --bot: #151b26;
+}
+
+body.light {
+    --bg: #f4f6fa;
+    --panel: #ffffff;
+    --panel2: #eef1f6;
+    --border: #dce1ea;
+    --text: #141821;
+    --muted: #667085;
+    --user: #e1e7ff;
+    --bot: #ffffff;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+    width: 270px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+    transition: .3s;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 21px;
+    font-weight: 800;
+    margin-bottom: 25px;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #7c5cff, #5eead4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: 900;
+}
+
+.new-chat {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    color: var(--text);
+    padding: 12px;
+    border-radius: 11px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.new-chat:hover {
+    border-color: var(--accent);
+}
+
+.section-title {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 8px 5px;
+    text-transform: uppercase;
+}
+
+.history {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.history-item {
+    padding: 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    color: var(--muted);
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-item:hover {
+    background: var(--panel2);
+    color: var(--text);
+}
+
+.sidebar-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.side-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    text-align: left;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.side-btn:hover {
+    background: var(--panel2);
+    color: var(--text);
+}
+
+/* MAIN */
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.topbar {
+    height: 65px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    background: var(--panel);
+}
+
+.menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #45e58c;
+    box-shadow: 0 0 10px #45e58c;
+}
+
+.theme-btn {
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    color: var(--text);
+    border-radius: 9px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+/* CHAT */
+
+.chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+}
+
+.welcome {
+    max-width: 900px;
+    margin: 60px auto 30px;
+    text-align: center;
+}
+
+.welcome-icon {
+    width: 75px;
+    height: 75px;
+    margin: auto;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #7c5cff, #5eead4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    box-shadow: 0 15px 50px rgba(124,92,255,.25);
+}
+
+.welcome h1 {
+    margin-top: 20px;
+    font-size: 34px;
+}
+
+.welcome p {
+    color: var(--muted);
+    margin-top: 10px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.quick {
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    padding: 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    transition: .2s;
+}
+
+.quick:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+}
+
+.quick b {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.quick span {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.message {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.avatar {
+    min-width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--panel2);
+}
+
+.message.user .avatar {
+    background: var(--accent);
+}
+
+.message-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.message-name {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+.bubble {
+    background: var(--bot);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 15px;
+    line-height: 1.6;
+    overflow-wrap: break-word;
+}
+
+.message.user .bubble {
+    background: var(--user);
+}
+
+.code {
+    margin-top: 12px;
+    background: #080a0e;
+    border: 1px solid #242b37;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.code-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    color: #8d98aa;
+    font-size: 12px;
+    background: #11151c;
+}
+
+.copy-btn {
+    border: none;
+    background: #202735;
+    color: white;
+    padding: 5px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+pre {
+    padding: 15px;
+    overflow-x: auto;
+    color: #d9e1ee;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+/* INPUT */
+
+.input-area {
+    padding: 15px 25px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+}
+
+.input-box {
+    max-width: 900px;
+    margin: auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    border: 1px solid var(--border);
+    background: var(--panel2);
+    border-radius: 15px;
+    padding: 10px;
+}
+
+textarea {
+    flex: 1;
+    resize: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    min-height: 45px;
+    max-height: 150px;
+    padding: 10px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.send {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 11px;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.send:hover {
+    filter: brightness(1.15);
+}
+
+.input-info {
+    max-width: 900px;
+    margin: 7px auto 0;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* RUNNER */
+
+.runner {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    z-index: 100;
+    padding: 30px;
+}
+
+.runner.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.runner-box {
+    width: min(900px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.runner-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.close {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 22px;
+    cursor: pointer;
+}
+
+#editor {
+    width: 100%;
+    min-height: 300px;
+    resize: vertical;
+    background: #080a0e;
+    color: #d9e1ee;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    font-family: Consolas, monospace;
+    outline: none;
+}
+
+.run-btn {
+    margin-top: 10px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 9px;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+}
+
+.console {
+    background: #050608;
+    color: #8ff0b5;
+    margin-top: 15px;
+    min-height: 100px;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+/* MOBILE */
+
+@media(max-width: 800px) {
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        bottom: 0;
+        z-index: 50;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .menu-btn {
+        display: block;
+    }
+
+    .quick-actions {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chat {
+        padding: 15px;
+    }
+
+    .welcome {
+        margin-top: 35px;
+    }
+
+    .welcome h1 {
+        font-size: 27px;
+    }
+
+    .input-area {
+        padding: 10px;
+    }
+}
+
+@media(max-width: 450px) {
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">JS</div>
+            JS Mentor AI
+        </div>
+
+        <button class="new-chat" onclick="newChat()">
+            ＋ Новый чат
+        </button>
+
+        <div class="section-title">История</div>
+
+        <div class="history" id="history"></div>
+
+        <div class="sidebar-bottom">
+
+            <button class="side-btn" onclick="openRunner()">
+                ▶ Запустить JavaScript
+            </button>
+
+            <button class="side-btn" onclick="clearHistory()">
+                🗑 Очистить историю
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <button class="menu-btn" onclick="toggleSidebar()">
+                ☰
+            </button>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                JS Mentor AI
+            </div>
+
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">
+                ☾
+            </button>
+
+        </header>
+
+        <!-- CHAT -->
+
+        <section class="chat" id="chat">
+
+            <div class="welcome" id="welcome">
+
+                <div class="welcome-icon">
+                    ⚡
+                </div>
+
+                <h1>JavaScript AI Mentor</h1>
+
+                <p>
+                    Твой персональный помощник для изучения и разработки на JavaScript
+                </p>
+
+            </div>
+
+            <div class="quick-actions" id="quickActions">
+
+                <button class="quick" onclick="quickAsk('Объясни мне JavaScript с нуля')">
+                    <b>📚 Обучение</b>
+                    <span>Изучать JavaScript</span>
+                </button>
+
+                <button class="quick" onclick="quickAsk('Напиши пример JavaScript-кода для калькулятора')">
+                    <b>💻 Написать код</b>
+                    <span>Создать готовый код</span>
+                </button>
+
+                <button class="quick" onclick="quickAsk('Объясни, что такое async и await в JavaScript')">
+                    <b>🧠 Объяснить</b>
+                    <span>Разобрать сложную тему</span>
+                </button>
+
+                <button class="quick" onclick="quickAsk('Какие самые частые ошибки бывают в JavaScript?')">
+                    <b>🐛 Ошибки</b>
+                    <span>Найти и исправить проблему</span>
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <div class="input-box">
+
+                <textarea
+                    id="input"
+                    placeholder="Спроси что-нибудь про JavaScript..."
+                    onkeydown="handleKey(event)"
+                ></textarea>
+
+                <button class="send" onclick="sendMessage()">
+                    ➤
+                </button>
+
+            </div>
+
+            <div class="input-info">
+                Enter — отправить • Shift + Enter — новая строка
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- JS RUNNER -->
+
+<div class="runner" id="runner">
+
+    <div class="runner-box">
+
+        <div class="runner-head">
+
+            <h2>JavaScript Playground</h2>
+
+            <button class="close" onclick="closeRunner()">
+                ×
+            </button>
+
+        </div>
+
+        <textarea id="editor">// Попробуй JavaScript:
+
+const name = "JavaScript";
+
+console.log("Привет, " + name + "!");
+
+for(let i = 1; i <= 5; i++){
+    console.log("Число:", i);
+}</textarea>
+
+        <button class="run-btn" onclick="runCode()">
+            ▶ Запустить
+        </button>
+
+        <div class="console" id="console">
+            Консоль готова...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ================================
+   VARIABLES
+================================ */
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+const welcome = document.getElementById("welcome");
+const quickActions = document.getElementById("quickActions");
+const historyBox = document.getElementById("history");
+
+let messages = [];
+let chatHistory = JSON.parse(localStorage.getItem("jsMentorHistory") || "[]");
+
+
+/* ================================
+   SEND MESSAGE
+================================ */
+
+function sendMessage() {
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage("user", text);
+
+    input.value = "";
+
+    hideWelcome();
+
+    setTimeout(() => {
+
+        const answer = generateAnswer(text);
+
+        addMessage("bot", answer);
+
+        saveHistory(text);
+
+    }, 500);
+}
+
+
+function quickAsk(text) {
+
+    input.value = text;
+    sendMessage();
+
+}
+
+
+/* ================================
+   MESSAGE
+================================ */
+
+function addMessage(type, content) {
+
+    messages.push({
+        type,
+        content
+    });
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "message " + type;
+
+    const avatar = document.createElement("div");
+
+    avatar.className = "avatar";
+
+    avatar.textContent = type === "user" ? "👤" : "⚡";
+
+    const contentBox = document.createElement("div");
+
+    contentBox.className = "message-content";
+
+    const name = document.createElement("div");
+
+    name.className = "message-name";
+
+    name.textContent = type === "user" ? "Ты" : "JS Mentor AI";
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "bubble";
+
+    if (typeof content === "object") {
+
+        bubble.innerHTML = content.text;
+
+        if (content.code) {
+
+            const codeBox = document.createElement("div");
+
+            codeBox.className = "code";
+
+            codeBox.innerHTML = `
+                <div class="code-head">
+                    <span>JavaScript</span>
+                    <button class="copy-btn"
+                    onclick="copyCode(this)">
+                    Копировать
+                    </button>
+                </div>
+
+                <pre>${escapeHTML(content.code)}</pre>
+            `;
+
+            bubble.appendChild(codeBox);
+        }
+
+    } else {
+
+        bubble.innerHTML = formatText(content);
+
+    }
+
+    contentBox.appendChild(name);
+    contentBox.appendChild(bubble);
+
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(contentBox);
+
+    chat.appendChild(wrapper);
+
+    chat.scrollTop = chat.scrollHeight;
+}
+
+
+/* ================================
+   AI LOGIC
+================================ */
+
+function generateAnswer(question) {
+
+    const q = question.toLowerCase();
+
+    /* VARIABLES */
+
+    if (
+        q.includes("переменн") ||
+        q.includes("let") ||
+        q.includes("const") ||
+        q.includes("var")
+    ) {
+
+        return {
+            text: `
+                <b>Переменные в JavaScript</b><br><br>
+
+                В современном JavaScript чаще всего используются
+                <code>let</code> и <code>const</code>.
+
+                <br><br>
+
+                <b>const</b> — значение нельзя переназначить.<br>
+                <b>let</b> — значение можно изменить.<br>
+                <b>var</b> — старый способ объявления переменных.
+
+                <br><br>
+                Например:
+            `,
+
+            code:
+`const name = "Mergen";
+let age = 18;
+
+age = 19;
+
+console.log(name);
+console.log(age);`
+        };
+
+    }
+
+
+    /* FUNCTION */
+
+    if (
+        q.includes("функци") ||
+        q.includes("function")
+    ) {
+
+        return {
+            text: `
+                <b>Функция</b> — это блок кода, который можно
+                вызывать несколько раз.
+
+                <br><br>
+
+                Современный JavaScript часто использует
+                стрелочные функции.
+            `,
+
+            code:
+`function sum(a, b) {
+    return a + b;
+}
+
+const result = sum(10, 20);
+
+console.log(result);
+
+// Стрелочная функция
+
+const multiply = (a, b) => {
+    return a * b;
+};
+
+console.log(multiply(5, 4));`
+        };
+
+    }
+
+
+    /* ARRAY */
+
+    if (
+        q.includes("массив") ||
+        q.includes("array")
+    ) {
+
+        return {
+            text: `
+                <b>Массив</b> хранит несколько значений
+                внутри одной переменной.
+
+                <br><br>
+
+                У массива есть полезные методы:
+                <code>map</code>, <code>filter</code>,
+                <code>find</code>, <code>reduce</code>.
+            `,
+
+            code:
+`const numbers = [1, 2, 3, 4, 5];
+
+const doubled = numbers.map(number => number * 2);
+
+const even = numbers.filter(number => number % 2 === 0);
+
+console.log(doubled);
+console.log(even);`
+        };
+
+    }
+
+
+    /* LOOP */
+
+    if (
+        q.includes("цикл") ||
+        q.includes("for ")
+    ) {
+
+        return {
+            text: `
+                В JavaScript есть несколько основных циклов:
+
+                <br><br>
+
+                <b>for</b> — когда известно количество повторений.<br>
+                <b>while</b> — пока условие истинно.<br>
+                <b>for...of</b> — перебор элементов массива.
+            `,
+
+            code:
+`for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+
+const names = ["Alex", "Mergen", "John"];
+
+for (const name of names) {
+    console.log(name);
+}`
+        };
+
+    }
+
+
+    /* DOM */
+
+    if (
+        q.includes("dom") ||
+        q.includes("кнопк") ||
+        q.includes("html")
+    ) {
+
+        return {
+            text: `
+                JavaScript может изменять HTML через <b>DOM</b>.
+
+                <br><br>
+
+                Например, можно найти кнопку,
+                изменить текст и добавить обработчик клика.
+            `,
+
+            code:
+`const button = document.querySelector("#myButton");
+
+button.addEventListener("click", () => {
+    button.textContent = "Нажато!";
+});`
+        };
+
+    }
+
+
+    /* ASYNC */
+
+    if (
+        q.includes("async") ||
+        q.includes("await") ||
+        q.includes("асинх")
+    ) {
+
+        return {
+            text: `
+                <b>async/await</b> используется для работы
+                с асинхронными операциями.
+
+                <br><br>
+
+                Например, запросом к серверу.
+
+                <br><br>
+
+                <code>await</code> позволяет дождаться
+                результата Promise.
+            `,
+
+            code:
+`async function loadUsers() {
+
+    try {
+
+        const response =
+            await fetch("https://jsonplaceholder.typicode.com/users");
+
+        const users = await response.json();
+
+        console.log(users);
+
+    } catch (error) {
+
+        console.error("Ошибка:", error);
+
+    }
+
+}
+
+loadUsers();`
+        };
+
+    }
+
+
+    /* CALCULATOR */
+
+    if (
+        q.includes("калькулятор") ||
+        q.includes("calculator")
+    ) {
+
+        return {
+            text: `
+                Вот простой калькулятор на JavaScript.
+                Его можно вставить на HTML-страницу.
+            `,
+
+            code:
+`function calculator(a, operator, b) {
+
+    switch (operator) {
+
+        case "+":
+            return a + b;
+
+        case "-":
+            return a - b;
+
+        case "*":
+            return a * b;
+
+        case "/":
+            if (b === 0) {
+                return "Нельзя делить на ноль";
+            }
+
+            return a / b;
+
+        default:
+            return "Неизвестная операция";
+    }
+}
+
+console.log(calculator(10, "+", 5));
+console.log(calculator(10, "*", 3));`
+        };
+
+    }
+
+
+    /* ERROR */
+
+    if (
+        q.includes("ошиб") ||
+        q.includes("error") ||
+        q.includes("bug") ||
+        q.includes("не работает")
+    ) {
+
+        return `
+            <b>Давай найдём ошибку.</b><br><br>
+
+            Пришли сюда свой JavaScript-код и желательно
+            текст ошибки из консоли браузера.
+
+            <br><br>
+
+            Я смогу разобрать:
+
+            <ul>
+                <li>SyntaxError</li>
+                <li>ReferenceError</li>
+                <li>TypeError</li>
+                <li>ошибки DOM</li>
+                <li>ошибки асинхронного кода</li>
+                <li>логические ошибки</li>
+            </ul>
+        `;
+
+    }
+
+
+    /* OBJECT */
+
+    if (
+        q.includes("объект") ||
+        q.includes("object")
+    ) {
+
+        return {
+            text: `
+                <b>Объект</b> хранит данные в формате
+                ключ → значение.
+
+                <br><br>
+
+                Объекты используются практически
+                во всех больших JavaScript-приложениях.
+            `,
+
+            code:
+`const user = {
+
+    name: "Mergen",
+    age: 18,
+    isStudent: true,
+
+    sayHello() {
+        console.log("Привет!");
+    }
+
+};
+
+console.log(user.name);
+user.sayHello();`
+        };
+
+    }
+
+
+    /* PROMISE */
+
+    if (
+        q.includes("promise") ||
+        q.includes("промис")
+    ) {
+
+        return {
+            text: `
+                <b>Promise</b> представляет результат
+                асинхронной операции.
+
+                <br><br>
+
+                Promise может находиться в состояниях:
+                pending, fulfilled или rejected.
+            `,
+
+            code:
+`const promise = new Promise((resolve, reject) => {
+
+    setTimeout(() => {
+        resolve("Готово!");
+    }, 1000);
+
+});
+
+promise
+    .then(result => {
+        console.log(result);
+    })
+    .catch(error => {
+        console.error(error);
+    });`
+        };
+
+    }
+
+
+    /* HELLO */
+
+    if (
+        q.includes("привет") ||
+        q.includes("здравств")
+    ) {
+
+        return `
+            Привет! 👋
+
+            <br><br>
+
+            Я <b>JS Mentor AI</b> — помощник по JavaScript.
+
+            <br><br>
+
+            Можешь попросить меня:
+
+            <ul>
+                <li>написать код</li>
+                <li>объяснить JavaScript</li>
+                <li>исправить ошибку</li>
+                <li>создать функцию</li>
+                <li>объяснить код</li>
+                <li>дать задания для практики</li>
+            </ul>
+        `;
+
+    }
+
+
+    /* PRACTICE */
+
+    if (
+        q.includes("задани") ||
+        q.includes("практик") ||
+        q.includes("учиться")
+    ) {
+
+        return `
+            <b>Вот 5 заданий для практики JavaScript:</b>
+
+            <br><br>
+
+            <b>1.</b> Создай калькулятор.<br>
+            <b>2.</b> Сделай список задач Todo.<br>
+            <b>3.</b> Создай генератор случайных чисел.<br>
+            <b>4.</b> Сделай игру «Угадай число».<br>
+            <b>5.</b> Создай таймер обратного отсчёта.
+
+            <br><br>
+
+            Если хочешь, я могу дать тебе задания
+            <b>от новичка до продвинутого уровня</b>.
+        `;
+
+    }
+
+
+    /* DEFAULT */
+
+    return `
+        <b>Я понял твой вопрос.</b><br><br>
+
+        Я специализируюсь на JavaScript и могу помочь
+        с кодом, DOM, функциями, массивами, объектами,
+        Promise, async/await, API и ошибками.
+
+        <br><br>
+
+        Попробуй написать, например:
+
+        <br><br>
+
+        <code>
+        объясни массивы<br>
+        </code>
+
+        <code>
+        создай калькулятор<br>
+        </code>
+
+        <code>
+        объясни async await<br>
+        </code>
+
+        <code>
+        почему мой код не работает<br>
+        </code>
+    `;
+
+}
+
+
+/* ================================
+   FORMAT
+================================ */
+
+function formatText(text) {
+
+    text = escapeHTML(text);
+
+    text = text.replace(
+        /`([^`]+)`/g,
+        "<code>$1</code>"
+    );
+
+    text = text.replace(
+        /\n/g,
+        "<br>"
+    );
+
+    return text;
+}
+
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* ================================
+   COPY
+================================ */
+
+function copyCode(button) {
+
+    const code =
+        button.parentElement.nextElementSibling.innerText;
+
+    navigator.clipboard.writeText(code);
+
+    button.textContent = "Скопировано!";
+
+    setTimeout(() => {
+        button.textContent = "Копировать";
+    }, 1500);
+
+}
+
+
+/* ================================
+   WELCOME
+================================ */
+
+function hideWelcome() {
+
+    if (welcome) welcome.style.display = "none";
+
+    if (quickActions) quickActions.style.display = "none";
+
+}
+
+
+/* ================================
+   NEW CHAT
+================================ */
+
+function newChat() {
+
+    messages = [];
+
+    chat.innerHTML = `
+        <div class="welcome" id="welcome">
+
+            <div class="welcome-icon">
+                ⚡
+            </div>
+
+            <h1>JavaScript AI Mentor</h1>
+
+            <p>
+                Твой персональный помощник по JavaScript
+            </p>
+
+        </div>
+
+        <div class="quick-actions" id="quickActions">
+
+            <button class="quick"
+            onclick="quickAsk('Объясни JavaScript с нуля')">
+                <b>📚 Обучение</b>
+                <span>Изучать JavaScript</span>
+            </button>
+
+            <button class="quick"
+            onclick="quickAsk('Напиши калькулятор на JavaScript')">
+                <b>💻 Код</b>
+                <span>Создать код</span>
+            </button>
+
+            <button class="quick"
+            onclick="quickAsk('Объясни async await')">
+                <b>🧠 Объяснить</b>
+                <span>Разобрать тему</span>
+            </button>
+
+            <button class="quick"
+            onclick="quickAsk('Как исправить ошибку JavaScript?')">
+                <b>🐛 Ошибки</b>
+                <span>Исправить код</span>
+            </button>
+
+        </div>
+    `;
+
+}
+
+
+/* ================================
+   HISTORY
+================================ */
+
+function saveHistory(text) {
+
+    chatHistory.unshift({
+        text: text,
+        date: new Date().toLocaleString()
+    });
+
+    chatHistory =
+        chatHistory.slice(0, 30);
+
+    localStorage.setItem(
+        "jsMentorHistory",
+        JSON.stringify(chatHistory)
+    );
+
+    renderHistory();
+
+}
+
+
+function renderHistory() {
+
+    historyBox.innerHTML = "";
+
+    chatHistory.forEach(item => {
+
+        const div =
+            document.createElement("div");
+
+        div.className = "history-item";
+
+        div.textContent = item.text;
+
+        div.onclick = () => {
+
+            input.value = item.text;
+            sendMessage();
+
+        };
+
+        historyBox.appendChild(div);
+
+    });
+
+}
+
+
+function clearHistory() {
+
+    if (
+        confirm("Удалить историю?")
+    ) {
+
+        chatHistory = [];
+
+        localStorage.removeItem(
+            "jsMentorHistory"
+        );
+
+        renderHistory();
+
+    }
+
+}
+
+
+/* ================================
+   THEME
+================================ */
+
+function toggleTheme() {
+
+    document.body.classList.toggle("light");
+
+    const light =
+        document.body.classList.contains("light");
+
+    localStorage.setItem(
+        "theme",
+        light ? "light" : "dark"
+    );
+
+    document.getElementById("themeBtn")
+        .textContent = light ? "☀" : "☾";
+
+}
+
+
+function loadTheme() {
+
+    if (
+        localStorage.getItem("theme") === "light"
+    ) {
+
+        document.body.classList.add("light");
+
+        document.getElementById("themeBtn")
+            .textContent = "☀";
+
+    }
+
+}
+
+
+/* ================================
+   RUN JAVASCRIPT
+================================ */
+
+function openRunner() {
+
+    document
+        .getElementById("runner")
+        .classList.add("active");
+
+}
+
+
+function closeRunner() {
+
+    document
+        .getElementById("runner")
+        .classList.remove("active");
+
+}
+
+
+function runCode() {
+
+    const code =
+        document.getElementById("editor").value;
+
+    const consoleBox =
+        document.getElementById("console");
+
+    consoleBox.textContent = "";
+
+    const oldLog = console.log;
+    const oldError = console.error;
+
+    console.log = function(...args) {
+
+        consoleBox.textContent +=
+            args.map(x => {
+
+                try {
+                    return typeof x === "object"
+                        ? JSON.stringify(x, null, 2)
+                        : String(x);
+                } catch {
+                    return String(x);
+                }
+
+            }).join(" ") + "\n";
+
+        oldLog.apply(console, args);
+
+    };
+
+    console.error = function(...args) {
+
+        consoleBox.textContent +=
+            "ERROR: " +
+            args.join(" ") +
+            "\n";
+
+        oldError.apply(console, args);
+
+    };
+
+    try {
+
+        new Function(code)();
+
+    } catch(error) {
+
+        consoleBox.textContent +=
+            "ERROR: " + error.message;
+
+    }
+
+    console.log = oldLog;
+    console.error = oldError;
+
+}
+
+
+/* ================================
+   KEYBOARD
+================================ */
+
+function handleKey(event) {
+
+    if (
+        event.key === "Enter" &&
+        !event.shiftKey
+    ) {
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+}
+
+
+/* ================================
+   SIDEBAR
+================================ */
+
+function toggleSidebar() {
+
+    document
+        .getElementById("sidebar")
+        .classList.toggle("open");
+
+}
+
+
+/* ================================
+   START
+================================ */
+
+renderHistory();
+
+loadTheme();
+
+</script>
+
+</body>
+</html>
+```
